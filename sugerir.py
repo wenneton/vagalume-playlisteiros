@@ -1,6 +1,7 @@
 import requests
 import sys
 from time import time, sleep
+import json
 
 def get_token(session_id, user, playlist):
     url = f"https://app2.vagalume.com.br/ajax/playlisteiros.php?action=buildToken&sessionID={session_id}&sessionUser={user}&playlistID={playlist}"
@@ -31,6 +32,26 @@ def suggest_music(pointer_id, session_id, token, user, playlist, proxy=None):
     print(response)
 
     return response
+
+def get_songs_on_playlist(playlist_id, session_id, session_user, order_by='date'):
+    url = f"https://app2.vagalume.com.br/ajax/playlisteiros.php?action=getMusic&\
+        playlistID={playlist_id}&orderby=date&sessionID={session_id}&\
+            sessionUser={session_user}"
+
+    with requests.Session() as s:
+        r = s.get(url, headers={'Connection': 'close'})
+        json_data = r.json()
+
+    return json_data
+
+def get_artists_on_playlist(playlist_id, session_id, session_user):
+    suggestions = get_songs_on_playlist(playlist_id, session_id, session_user)
+
+    artists = []
+    for suggestion in suggestions['success']['list']:
+        artists.append(suggestion['band_descr'])
+
+    return artists
 
 if __name__ == '__main__':
     user = '3ade68b7gaf47cea3'
