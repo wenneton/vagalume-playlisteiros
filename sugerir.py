@@ -23,7 +23,7 @@ def suggest_music(pointer_id, session_id, token, user, playlist, proxy=None):
 
     with requests.Session() as s:
         if proxy:
-            r = s.post("https://app2.vagalume.com.br/ajax/playlisteiros.php", data=data, headers={'Connection': 'close'}, proxies=proxies)
+            r = s.post("https://app2.vagalume.com.br/ajax/playlisteiros.php", data=data, headers={'Connection': 'close'}, proxies=proxies, timeout=15)
             response = r.text
         else:
             r = s.post("https://app2.vagalume.com.br/ajax/playlisteiros.php", data=data, headers={'Connection': 'close'})
